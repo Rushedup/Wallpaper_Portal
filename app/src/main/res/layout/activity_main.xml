@@ -31,18 +31,22 @@
                 android:id="@+id/Flickr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:icon="@drawable/flickr_tab"
                 android:text="@string/flickr" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/Spotify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="#009688"
+                android:icon="@drawable/spotify_tab"
                 android:text="@string/spotify" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/Nasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:icon="@drawable/nasa_tab"
                 android:text="@string/nasa" />
         </com.google.android.material.tabs.TabLayout>
 
