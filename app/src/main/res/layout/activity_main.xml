@@ -31,19 +31,19 @@
                 android:id="@+id/Flickr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Flickr Here" />
+                android:text="@string/flickr" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/Spotify"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Spotify Here" />
+                android:text="@string/spotify" />
 
             <com.google.android.material.tabs.TabItem
                 android:id="@+id/Nasa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nasa Here" />
+                android:text="@string/nasa" />
         </com.google.android.material.tabs.TabLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
