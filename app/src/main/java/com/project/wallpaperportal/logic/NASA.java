@@ -4,10 +4,15 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.project.wallpaperportal.R;
 
@@ -32,10 +37,29 @@ public class NASA extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         System.out.println("nasa on create view");
-        return inflater.inflate(R.layout.nasa_tab, container, false);
+        View root = inflater.inflate(R.layout.nasa_tab, container, false);
+//        root.findViewById(R.id.nasa_image_info);
+        TextView textView = root.findViewById(R.id.nasa_image_info);
+        volleyRequest(textView);
+        return root;
     }
-    private void volleyRequest() {
+    private void volleyRequest(TextView textView) {
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "https://api.nasa.gov/planetary/apod?api_key=zxgod3DcImapspEBaEBvIdC8dpv4Y1V8BO9L5KU8";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        textView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("That didn't work!");
+            }
+        });
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 }
