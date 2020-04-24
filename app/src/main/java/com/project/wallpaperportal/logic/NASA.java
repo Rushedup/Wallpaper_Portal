@@ -50,8 +50,10 @@ public class NASA extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        String[] explanation = response.split(":", 4);
+                        explanation = explanation[3].split("\"", 3);
                         // Display the first 500 characters of the response string.
-                        textView.setText("Response is: "+ response.substring(0,500));
+                        textView.setText(explanation[1]);
                     }
                 }, new Response.ErrorListener() {
             @Override
