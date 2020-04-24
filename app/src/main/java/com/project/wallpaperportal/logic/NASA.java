@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.project.wallpaperportal.R;
 
 public class NASA extends Fragment {
@@ -31,5 +33,9 @@ public class NASA extends Fragment {
         // Inflate the layout for this fragment
         System.out.println("nasa on create view");
         return inflater.inflate(R.layout.nasa_tab, container, false);
+    }
+    private void volleyRequest() {
+        RequestQueue queue = Volley.newRequestQueue(this.getContext());
+        String url = "https://api.nasa.gov/planetary/apod?api_key=zxgod3DcImapspEBaEBvIdC8dpv4Y1V8BO9L5KU8";
     }
 }
