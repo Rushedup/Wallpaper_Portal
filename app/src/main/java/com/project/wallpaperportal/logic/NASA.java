@@ -1,6 +1,7 @@
 package com.project.wallpaperportal.logic;
 
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,6 +41,7 @@ public class NASA extends Fragment {
         View root = inflater.inflate(R.layout.nasa_tab, container, false);
 //        root.findViewById(R.id.nasa_image_info);
         TextView textView = root.findViewById(R.id.nasa_image_info);
+        textView.setMovementMethod(new ScrollingMovementMethod());
         volleyRequest(textView);
         return root;
     }
@@ -50,10 +52,11 @@ public class NASA extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String[] explanation = response.split(":", 4);
-                        explanation = explanation[3].split("\"", 3);
+                        String[] explanation = response.split("explanation");
+                        explanation = explanation[1].split("\"", 4);
+//                        explanation = explanation[3].split("\"", 3);
                         // Display the first 500 characters of the response string.
-                        textView.setText(explanation[1]);
+                        textView.setText(explanation[2]);
                     }
                 }, new Response.ErrorListener() {
             @Override
