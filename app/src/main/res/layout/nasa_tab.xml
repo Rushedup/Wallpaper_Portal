@@ -26,4 +26,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
+    <ImageView
+        android:id="@+id/apod_image_view"
+        android:layout_width="366dp"
+        android:layout_height="257dp"
+        android:contentDescription="@string/nasa_image_view"
+        app:layout_constraintBottom_toTopOf="@+id/nasa_image_info"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
