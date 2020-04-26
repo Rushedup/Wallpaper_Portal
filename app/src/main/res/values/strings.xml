@@ -4,4 +4,6 @@
     <string name="spotify">Spotify</string>
     <string name="nasa">NASA</string>
     <string name="nasa_image_view">nasa_image_view</string>
+    <string name="set_wallpaper">Set Wallpaper</string>
+    <string name="apod_link"> Its a video today ! Click <a href="https://apod.nasa.gov/"> here </a> to go to the link</string>
 </resources>

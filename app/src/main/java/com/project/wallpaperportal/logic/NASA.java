@@ -1,10 +1,18 @@
 package com.project.wallpaperportal.logic;
 
+import android.app.WallpaperManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,13 +27,20 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.snackbar.Snackbar;
 import com.project.wallpaperportal.R;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+
 public class NASA extends Fragment {
+    private String imageUrl;
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private Bitmap image;
+    private Target target;
     public static NASA newInstance(int index) {
         NASA fragment = new NASA();
         Bundle bundle = new Bundle();
@@ -50,10 +65,12 @@ public class NASA extends Fragment {
         TextView textView = root.findViewById(R.id.nasa_image_info);
         textView.setMovementMethod(new ScrollingMovementMethod());
         ImageView imageView = root.findViewById(R.id.apod_image_view);
-        volleyRequest(textView, imageView);
+        Button setWallpaper = root.findViewById(R.id.setWallpaper);
+        setWallpaper.setVisibility(View.GONE);
+        volleyRequest(textView, imageView, setWallpaper);
         return root;
     }
-    private void volleyRequest(TextView textView, ImageView imageView) {
+    private void volleyRequest(TextView textView, ImageView imageView, Button button) {
 //        RequestQueue queue = Volley.newRequestQueue(this.getContext());
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         String url = "https://api.nasa.gov/planetary/apod?api_key=zxgod3DcImapspEBaEBvIdC8dpv4Y1V8BO9L5KU8";
@@ -65,13 +82,21 @@ public class NASA extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         // Do something with response
-                        //mTextView.setText(response.toString());
-
                         // Process the JSON
                         try{
                             // Get the JSON array
-                            String explanatiion = response.getString("explanation");
-                            textView.setText(explanatiion);
+                            String explanation = response.getString("explanation");
+                            String type = response.getString("media_type");
+                            if (type.equals("image")) {
+                                String imageURL = response.getString("hdurl");
+                                imageUrl = imageURL;
+                                loadFromPicasso(imageUrl, imageView);
+                                textView.setText(explanation);
+                                buttonHandler(button);
+                            } else {
+                                textView.setMovementMethod(LinkMovementMethod.getInstance());
+                                textView.setText(R.string.apod_link);
+                            }
                         }catch (JSONException e){
                             e.printStackTrace();
                         }
@@ -88,16 +113,40 @@ public class NASA extends Fragment {
         // Add JsonObjectRequest to the RequestQueue
         requestQueue.add(jsonObjectRequest);
     }
-//    private void setText(TextView textView, String response) {
-//        String[] explanation = response.split("explanation");
-//        explanation = explanation[1].split("\"", 4);
-////                        explanation = explanation[3].split("\"", 3);
-//        // Display the first 500 characters of the response string.
-//        textView.setText(explanation[2]);
-//    }
-//    private String getImageURL (String response) {
-//        String[] splitCheck = response.split("media_type");
-//        if (splitCheck[])
-//    }
+    private void loadFromPicasso (String url, ImageView imageView) {
+            Picasso.get().load(url).into(target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    image = bitmap;
+                    imageView.setImageBitmap(bitmap);
+                }
 
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
+    }
+    private void setWallapaper(Bitmap result) {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
+        try {
+            wallpaperManager.setBitmap(result);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    private void buttonHandler(Button button) {
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWallapaper(image);
+            }
+        });
+    }
 }
