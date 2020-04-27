@@ -16,6 +16,7 @@ import com.project.wallpaperportal.R;
 import java.io.IOException;
 
 public class Flickr extends Fragment {
+    private Bitmap image;
     private static final String ARG_SECTION_NUMBER = "section_number";
     public static Flickr newInstance(int index) {
         Flickr fragment = new Flickr();
@@ -39,6 +40,10 @@ public class Flickr extends Fragment {
         return inflater.inflate(R.layout.flickr_tab, container, false);
     }
 
+    /**
+     * Instead of creating functions like these again for the button, just call it from the flickr class
+     * @param result
+     */
     private void setWallapaper(Bitmap result) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
         try {
