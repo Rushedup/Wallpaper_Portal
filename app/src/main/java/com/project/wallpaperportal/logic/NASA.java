@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -41,6 +42,9 @@ public class NASA extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private Bitmap image;
     private Target target;
+    private TextView superTextView;
+    private Button superButton;
+    private ProgressBar progressBar;
     public static NASA newInstance(int index) {
         NASA fragment = new NASA();
         Bundle bundle = new Bundle();
@@ -63,9 +67,16 @@ public class NASA extends Fragment {
         View root = inflater.inflate(R.layout.nasa_tab, container, false);
 //        root.findViewById(R.id.nasa_image_info);
         TextView textView = root.findViewById(R.id.nasa_image_info);
-        textView.setMovementMethod(new ScrollingMovementMethod());
+        superTextView = textView;
         ImageView imageView = root.findViewById(R.id.apod_image_view);
         Button setWallpaper = root.findViewById(R.id.setWallpaper);
+        superButton = setWallpaper;
+        ProgressBar loading_image = root.findViewById(R.id.loading_image);
+        progressBar = loading_image;
+        loading_image.setVisibility(View.VISIBLE);
+        textView.setMovementMethod(new ScrollingMovementMethod());
+        textView.setVisibility(View.GONE);
+        imageView.setVisibility(View.GONE);
         setWallpaper.setVisibility(View.GONE);
         volleyRequest(textView, imageView, setWallpaper);
         return root;
@@ -92,10 +103,10 @@ public class NASA extends Fragment {
                                 imageUrl = imageURL;
                                 loadFromPicasso(imageUrl, imageView);
                                 textView.setText(explanation);
-                                buttonHandler(button);
                             } else {
                                 textView.setMovementMethod(LinkMovementMethod.getInstance());
                                 textView.setText(R.string.apod_link);
+                                textView.setVisibility(View.VISIBLE);
                             }
                         }catch (JSONException e){
                             e.printStackTrace();
@@ -119,6 +130,12 @@ public class NASA extends Fragment {
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
                     image = bitmap;
                     imageView.setImageBitmap(bitmap);
+                    imageView.setVisibility(View.VISIBLE);
+                    if (imageView.getVisibility() == View.VISIBLE) {
+                        superTextView.setVisibility(View.VISIBLE);
+                        buttonHandler(superButton);
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
 
                 @Override
