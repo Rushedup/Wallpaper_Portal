@@ -1,14 +1,19 @@
 package com.project.wallpaperportal.logic;
 
+import android.app.WallpaperManager;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 //import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.app.AppCompatActivity;
 import com.project.wallpaperportal.R;
+
+import java.io.IOException;
 
 public class Flickr extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
@@ -32,5 +37,23 @@ public class Flickr extends Fragment {
         // Inflate the layout for this fragment
         System.out.println("flickr on create view");
         return inflater.inflate(R.layout.flickr_tab, container, false);
+    }
+
+    private void setWallapaper(Bitmap result) {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
+        try {
+            wallpaperManager.setBitmap(result);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    private void buttonHandler(Button button) {
+        button.setVisibility(View.VISIBLE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setWallapaper(image);
+            }
+        });
     }
 }
