@@ -35,4 +35,7 @@ public class Spotify extends Fragment {
         System.out.println("spotify on create view");
         return inflater.inflate(R.layout.spotify_tab, container, false);
     }
+    private void authenticateSpotify() {
+        
+    }
 }

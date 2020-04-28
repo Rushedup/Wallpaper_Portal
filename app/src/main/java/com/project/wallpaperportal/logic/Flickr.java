@@ -1,5 +1,4 @@
 package com.project.wallpaperportal.logic;
-
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -7,10 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-//import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.AppCompatActivity;
 import com.project.wallpaperportal.R;
 
 import java.io.IOException;
@@ -42,7 +38,7 @@ public class Flickr extends Fragment {
 
     /**
      * Instead of creating functions like these again for the button, just call it from the flickr class
-     * @param result
+     * @param result the image to be set
      */
     private void setWallapaper(Bitmap result) {
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(getContext());
