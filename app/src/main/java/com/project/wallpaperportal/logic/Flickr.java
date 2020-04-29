@@ -14,6 +14,8 @@ import java.io.IOException;
 public class Flickr extends Fragment {
     private Bitmap image;
     private static final String ARG_SECTION_NUMBER = "section_number";
+    private final String api_key = "84847469a610a5f8c906b1ef3e4321b5";
+//    private String getClusterUrl = ""
     public static Flickr newInstance(int index) {
         Flickr fragment = new Flickr();
         Bundle bundle = new Bundle();
@@ -34,6 +36,9 @@ public class Flickr extends Fragment {
         // Inflate the layout for this fragment
         System.out.println("flickr on create view");
         return inflater.inflate(R.layout.flickr_tab, container, false);
+    }
+    private void callFlickr (String url) {
+
     }
 
     /**
