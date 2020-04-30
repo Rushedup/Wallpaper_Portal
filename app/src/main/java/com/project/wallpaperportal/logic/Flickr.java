@@ -87,7 +87,15 @@ public class Flickr extends Fragment {
                     public void onResponse(String response) {
                         // Display the first 500 characters of the response string.
                         System.out.println(response);
-
+                        JSONObject workableResponse = parseResponse(response);
+                        String apiKey = null;
+                        try {
+                            JSONObject workAround = workableResponse.getJSONObject("api_key");
+                            apiKey = workAround.getString("_content");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        System.out.println(apiKey);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -119,5 +127,19 @@ public class Flickr extends Fragment {
                 setWallapaper(image);
             }
         });
+    }
+    private JSONObject parseResponse(String response) {
+        char[] temp = new  char[response.length() - 15];
+        for (int i = 0; i < temp.length; i++) {
+            temp[i] = response.charAt(i + 14);
+        }
+        String toReturn = new String(temp);
+        try {
+            JSONObject object = new JSONObject(toReturn);
+            return object;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
