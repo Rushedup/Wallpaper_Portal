@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue;
 //import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.project.wallpaperportal.MainActivity;
 import com.project.wallpaperportal.R;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -70,6 +71,7 @@ public class NASA extends Fragment {
         volleyRequest(textView, imageView);
         return root;
     }
+
     private void volleyRequest(TextView textView, ImageView imageView) {
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         String url = "https://api.nasa.gov/planetary/apod?api_key=zxgod3DcImapspEBaEBvIdC8dpv4Y1V8BO9L5KU8";

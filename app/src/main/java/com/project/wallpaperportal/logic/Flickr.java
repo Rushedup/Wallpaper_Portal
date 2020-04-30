@@ -7,7 +7,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.fragment.app.Fragment;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.project.wallpaperportal.R;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -15,7 +26,10 @@ public class Flickr extends Fragment {
     private Bitmap image;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final String api_key = "84847469a610a5f8c906b1ef3e4321b5";
-//    private String getClusterUrl = ""
+    private String getClusterUrl;
+    private String getClusterPhotos;
+    private String getPhotoSizes;
+    private  String test = "https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value&api_key=84847469a610a5f8c906b1ef3e4321b5&format=json";
     public static Flickr newInstance(int index) {
         Flickr fragment = new Flickr();
         Bundle bundle = new Bundle();
@@ -35,12 +49,56 @@ public class Flickr extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         System.out.println("flickr on create view");
-        return inflater.inflate(R.layout.flickr_tab, container, false);
+        View root = inflater.inflate(R.layout.flickr_tab, container, false);
+        callFlickr(test);
+        return root;
     }
-    private void callFlickr (String url) {
+//    private void callFlickr (String url) {
+//        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+//                Request.Method.GET,
+//                url,
+//                null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try{
+//                            String print = response.getString("api_key");
+//                            System.out.println(print);
+//                        }catch (JSONException e){
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener(){
+//                    @Override
+//                    public void onErrorResponse(VolleyError error){
+//                        System.out.println(error);
+//                    }
+//                }
+//        );
+//        requestQueue.add(jsonObjectRequest);
+//    }
+    private  void callFlickr(String url) {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        System.out.println(response);
 
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+
+// Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
-
     /**
      * Instead of creating functions like these again for the button, just call it from the flickr class
      * @param result the image to be set
