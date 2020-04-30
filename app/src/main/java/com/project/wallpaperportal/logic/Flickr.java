@@ -29,7 +29,8 @@ public class Flickr extends Fragment {
     private String getClusterUrl;
     private String getClusterPhotos;
     private String getPhotoSizes;
-    private  String test = "https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value&api_key=84847469a610a5f8c906b1ef3e4321b5&format=json";
+    private  String test = "https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value" +
+            "&api_key=84847469a610a5f8c906b1ef3e4321b5&format=json&nojsoncallback=1";
     public static Flickr newInstance(int index) {
         Flickr fragment = new Flickr();
         Bundle bundle = new Bundle();
@@ -53,59 +54,32 @@ public class Flickr extends Fragment {
         callFlickr(test);
         return root;
     }
-//    private void callFlickr (String url) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-//                Request.Method.GET,
-//                url,
-//                null,
-//                new Response.Listener<JSONObject>() {
-//                    @Override
-//                    public void onResponse(JSONObject response) {
-//                        try{
-//                            String print = response.getString("api_key");
-//                            System.out.println(print);
-//                        }catch (JSONException e){
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                },
-//                new Response.ErrorListener(){
-//                    @Override
-//                    public void onErrorResponse(VolleyError error){
-//                        System.out.println(error);
-//                    }
-//                }
-//        );
-//        requestQueue.add(jsonObjectRequest);
-//    }
-    private  void callFlickr(String url) {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
+    private void callFlickr (String url) {
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                url,
+                null,
+                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        System.out.println(response);
-                        JSONObject workableResponse = parseResponse(response);
-                        String apiKey = null;
-                        try {
-                            JSONObject workAround = workableResponse.getJSONObject("api_key");
-                            apiKey = workAround.getString("_content");
-                        } catch (JSONException e) {
+                    public void onResponse(JSONObject response) {
+                        try{
+                            JSONObject jsonObject = response.getJSONObject("api_key");
+                            String print = jsonObject.getString("_content");
+                            System.out.println(print);
+                        }catch (JSONException e){
                             e.printStackTrace();
                         }
-                        System.out.println(apiKey);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                System.out.println(error);
-            }
-        });
-
-// Add the request to the RequestQueue.
-        queue.add(stringRequest);
+                },
+                new Response.ErrorListener(){
+                    @Override
+                    public void onErrorResponse(VolleyError error){
+                        System.out.println(error);
+                    }
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
     }
     /**
      * Instead of creating functions like these again for the button, just call it from the flickr class
@@ -127,19 +101,5 @@ public class Flickr extends Fragment {
                 setWallapaper(image);
             }
         });
-    }
-    private JSONObject parseResponse(String response) {
-        char[] temp = new  char[response.length() - 15];
-        for (int i = 0; i < temp.length; i++) {
-            temp[i] = response.charAt(i + 14);
-        }
-        String toReturn = new String(temp);
-        try {
-            JSONObject object = new JSONObject(toReturn);
-            return object;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 }
