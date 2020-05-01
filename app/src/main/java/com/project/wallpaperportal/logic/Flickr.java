@@ -68,6 +68,7 @@ public class Flickr extends Fragment {
                             String print = jsonObject.getString("_content");
                             System.out.println(print);
                         }catch (JSONException e){
+                            //print the error
                             e.printStackTrace();
                         }
                     }
