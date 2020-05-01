@@ -8,4 +8,5 @@
     <string name="apod_link"> Its a video today ! Click <a href="https://apod.nasa.gov/"> here </a> to go to the link</string>
     <string name="search_hashtags">Search Hashtags</string>
     <string name="shuffle">shuffle</string>
+    <string name="failed">Invalid Tag, re-enter a new tag</string>
 </resources>

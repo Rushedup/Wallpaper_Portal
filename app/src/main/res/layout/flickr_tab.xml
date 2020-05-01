@@ -18,6 +18,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.375" />
+    <TextView
+        android:id="@+id/failedView"
+        android:layout_width="244dp"
+        android:layout_height="30dp"
+        android:text="@string/failed"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/setWallpaper"
@@ -47,6 +57,7 @@
         app:layout_constraintVertical_bias="0.046">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/search_bar"
             android:layout_width="match_parent"
             android:layout_height="58dp"
             android:hint="@string/search_hashtags"
@@ -55,7 +66,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="true"
