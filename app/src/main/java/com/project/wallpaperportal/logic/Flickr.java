@@ -1,6 +1,5 @@
 package com.project.wallpaperportal.logic;
 import android.app.WallpaperManager;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -18,8 +16,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -34,8 +30,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
+@SuppressWarnings("ConstantConditions")
 public class Flickr extends Fragment {
     private Bitmap image;
     private TextView failedView;
@@ -44,6 +42,9 @@ public class Flickr extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final String api_key = "84847469a610a5f8c906b1ef3e4321b5";
     private String keyword;
+    /**
+     * Target to load picasso images into.
+     */
     private Target target;
     private Button shuffleButton;
     private ProgressBar progressBar;
@@ -75,41 +76,32 @@ public class Flickr extends Fragment {
         failedView.setVisibility(View.GONE);
         setWallpaperButton.setVisibility(View.GONE);
         progressBar.setVisibility(View.GONE);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE);
+        searchButton.setOnClickListener(v -> {
+            searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE);
+            shuffleButton.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+            String key = Objects.requireNonNull(searchBar.getText()).toString();
+            keyword = key;
+            callFlickr(key);
+            System.out.println(keyword);
+        });
+        searchBar.setOnEditorActionListener((v, actionId, event) -> {
+            if(actionId == EditorInfo.IME_ACTION_DONE) {
+                searchBar.onEditorAction(EditorInfo.IME_ACTION_GO);
                 shuffleButton.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
-                String key = searchBar.getText().toString();
+                String key = Objects.requireNonNull(searchBar.getText()).toString();
                 keyword = key;
                 callFlickr(key);
-                System.out.println(keyword);
+                return true;
             }
-        });
-        searchBar.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE) {
-                    searchBar.onEditorAction(EditorInfo.IME_ACTION_GO);
-                    shuffleButton.setVisibility(View.GONE);
-                    progressBar.setVisibility(View.VISIBLE);
-                    String key = searchBar.getText().toString();
-                    keyword = key;
-                    callFlickr(key);
-                    return true;
-                }
-                return false;
-            }
+            return false;
         });
         shuffleButton.setVisibility(View.GONE);
-        shuffleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                progressBar.setVisibility(View.VISIBLE);
-                shuffleButton.setVisibility(View.GONE);
-                callFlickr(keyword);
-            }
+        shuffleButton.setOnClickListener(v -> {
+            progressBar.setVisibility(View.VISIBLE);
+            shuffleButton.setVisibility(View.GONE);
+            callFlickr(keyword);
         });
         return root;
     }
@@ -125,22 +117,14 @@ public class Flickr extends Fragment {
                 Request.Method.GET,
                 getCluster,
                 null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            getTagCluster(response, keyword);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                response -> {
+                    try {
+                        getTagCluster(response, keyword);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        System.out.println(error);
-                    }
-                }
+                Throwable::printStackTrace
         );
         requestQueue.add(jsonObjectRequest);
     }
@@ -159,12 +143,7 @@ public class Flickr extends Fragment {
 
     private void buttonHandler(Button button) {
         button.setVisibility(View.VISIBLE);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setWallpaper(image);
-            }
-        });
+        button.setOnClickListener(v -> setWallpaper(image));
     }
 
     private void getTagCluster(JSONObject response, String tag) throws JSONException {
@@ -174,7 +153,7 @@ public class Flickr extends Fragment {
         }
         JSONObject clusters = response.getJSONObject("clusters");
         JSONArray clustersJSONArray = clusters.getJSONArray("cluster");
-        List<String> clusterTags = new ArrayList<String>();
+        List<String> clusterTags = new ArrayList<>();
         int clustersLength = clustersJSONArray.length();
 //        if (clustersLength >= 25) {
 //            clustersLength = 25;
@@ -218,34 +197,26 @@ public class Flickr extends Fragment {
                 Request.Method.GET,
                 getClusterPhotoUrl,
                 null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject("photos");
-                            JSONArray photoIDs = jsonObject.getJSONArray("photo");
-                            JSONArray publicPhotoIDs = new JSONArray();
-                            for (int i = 0; i < photoIDs.length(); i++) {
-                                JSONObject temp = photoIDs.getJSONObject(i);
-                                int isPublic = temp.getInt("ispublic");
-                                if (isPublic == 1) {
-                                    publicPhotoIDs.put(temp);
-                                }
+                response -> {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject("photos");
+                        JSONArray photoIDs = jsonObject.getJSONArray("photo");
+                        JSONArray publicPhotoIDs = new JSONArray();
+                        for (int i = 0; i < photoIDs.length(); i++) {
+                            JSONObject temp = photoIDs.getJSONObject(i);
+                            int isPublic = temp.getInt("ispublic");
+                            if (isPublic == 1) {
+                                publicPhotoIDs.put(temp);
                             }
-                            String[] pictureInfo = returnRandomID(publicPhotoIDs);
-                            System.out.println(pictureInfo[0]);
-                            getPhotoUrl(pictureInfo[0]);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+                        String[] pictureInfo = returnRandomID(publicPhotoIDs);
+                        System.out.println(pictureInfo[0]);
+                        getPhotoUrl(pictureInfo[0]);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        System.out.println(error);
-                    }
-                }
+                Throwable::printStackTrace
         );
         requestQueue.add(jsonObjectRequest);
     }
@@ -268,27 +239,19 @@ public class Flickr extends Fragment {
                 Request.Method.GET,
                 getSizeUrl,
                 null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONObject jsonObject = response.getJSONObject("sizes");
-                            JSONArray sizes = jsonObject.getJSONArray("size");
-                            JSONObject photo = sizes.getJSONObject(sizes.length() - 1);
-                            String url = photo.getString("source");
-                            System.out.println(url);
-                            loadImage(url, imageView);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                response -> {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject("sizes");
+                        JSONArray sizes = jsonObject.getJSONArray("size");
+                        JSONObject photo = sizes.getJSONObject(sizes.length() - 1);
+                        String url = photo.getString("source");
+                        System.out.println(url);
+                        loadImage(url, imageView);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 },
-                new Response.ErrorListener(){
-                    @Override
-                    public void onErrorResponse(VolleyError error){
-                        System.out.println(error);
-                    }
-                }
+                Throwable::printStackTrace
         );
         requestQueue.add(jsonObjectRequest);
     }
