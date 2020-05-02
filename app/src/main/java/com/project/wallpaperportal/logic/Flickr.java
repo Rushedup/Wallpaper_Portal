@@ -37,11 +37,8 @@ public class Flickr extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final String api_key = "84847469a610a5f8c906b1ef3e4321b5";
     private String keyword = null;
-//    private
-    private String getClusterPhotos;
-    private String getPhotoSizes;
-    private  String test = "https://www.flickr.com/services/rest/?method=flickr.test.echo&name=value" +
-            "&api_key="+api_key+"&format=json&nojsoncallback=1";
+
+
     public static Flickr newInstance(int index) {
         Flickr fragment = new Flickr();
         Bundle bundle = new Bundle();
@@ -53,7 +50,7 @@ public class Flickr extends Fragment {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
-    //refer to https://www.androidhive.info/2015/09/android-material-design-working-with-tabs/
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -70,12 +67,13 @@ public class Flickr extends Fragment {
             public void onClick(View v) {
                 String key = searchBar.getText().toString();
                 keyword = key;
-                System.out.println(keyword);
+//                System.out.println(keyword);
                 callFlickr(key);
             }
         });
         return root;
     }
+
     private void callFlickr (String keyword) {
         failedView.setVisibility(View.GONE);
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
@@ -116,6 +114,7 @@ public class Flickr extends Fragment {
             ex.printStackTrace();
         }
     }
+
     private void buttonHandler(Button button) {
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(new View.OnClickListener() {
@@ -125,6 +124,7 @@ public class Flickr extends Fragment {
             }
         });
     }
+
     private void getTagCluster(JSONObject response) throws JSONException {
         if (response.getString("stat").equals("fail")) {
             failedView.setVisibility(View.VISIBLE);
@@ -133,15 +133,15 @@ public class Flickr extends Fragment {
         JSONArray clustersJSONArray = clusters.getJSONArray("cluster");
         List<String> clusterTags = new ArrayList<String>();
         int clustersLength = clustersJSONArray.length();
-        if (clustersLength >= 25) {
-            clustersLength = 25;
-        }
+//        if (clustersLength >= 25) {
+//            clustersLength = 25;
+//        }
         for (int i = 0; i < clustersLength; i++) {
             JSONObject temp = clustersJSONArray.getJSONObject(i);
             int total = temp.getInt("total");
-            if (total >= 10) {
-                total = 10;
-            }
+//            if (total >= 10) {
+//                total = 10;
+//            }
             JSONArray tagArray = temp.getJSONArray("tag");
             for(int j = 0; j < total; j++) {
                 JSONObject tagArrayJSONObject = tagArray.getJSONObject(j);
@@ -151,8 +151,10 @@ public class Flickr extends Fragment {
         }
         System.out.println(clusterTags.size());
         String[] tags = getClusterPhotoOptions(clusterTags);
-
+        String photoID = getRandomPhotoID(tags);
+        System.out.println(photoID);
     }
+
     private String[] getClusterPhotoOptions (List<String> tags) {
         String[] tagOptions = new String[3];
         //get any 3 tags from the given List of String.
@@ -163,5 +165,12 @@ public class Flickr extends Fragment {
             tagOptions[i] = tags.get(randomIndex);
         }
         return  tagOptions;
+    }
+
+    private String getRandomPhotoID(String[] tags) {
+        String getClusterPhotoUrl = "https://www.flickr.com/services/rest/?method=flickr.tags.getClusterPhotos&api_key="
+                +api_key+"&tag=null&cluster_id="+tags[0]+"-"+tags[1]+"-"+tags[2]+"&format=json&nojsoncallback=1";
+//        System.out.println(getClusterPhotoUrl);
+        return getClusterPhotoUrl;
     }
 }

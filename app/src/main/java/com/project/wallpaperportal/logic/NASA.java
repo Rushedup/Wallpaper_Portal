@@ -1,6 +1,7 @@
 package com.project.wallpaperportal.logic;
 import android.app.WallpaperManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
@@ -32,7 +33,7 @@ public class NASA extends Fragment {
     private String imageUrl;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private Bitmap image;
-//    private Target target;
+    private Target target;
     private TextView superTextView;
     private Button superButton;
     private ProgressBar progressBar;
@@ -103,12 +104,12 @@ public class NASA extends Fragment {
         requestQueue.add(jsonObjectRequest);
     }
     private void loadFromPicasso (String url, ImageView imageView) {
-        Target target;
         Picasso.get().load(url).into(target = new Target() {
                 @Override
                 public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    BitmapDrawable mBitmapDrawable = new BitmapDrawable(getResources(), bitmap);
                     image = bitmap;
-                    imageView.setImageBitmap(bitmap);
+                    imageView.setImageDrawable(mBitmapDrawable);
                     imageView.setVisibility(View.VISIBLE);
                     if (imageView.getVisibility() == View.VISIBLE) {
                         superTextView.setVisibility(View.VISIBLE);
