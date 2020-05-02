@@ -28,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class Flickr extends Fragment {
     private Bitmap image;
@@ -155,6 +156,12 @@ public class Flickr extends Fragment {
     private String[] getClusterPhotoOptions (List<String> tags) {
         String[] tagOptions = new String[3];
         //get any 3 tags from the given List of String.
+        int randomIndex;
+        Random r = new Random();
+        for (int i = 0; i < 3; i++) {
+             randomIndex = r.nextInt(tags.size());
+            tagOptions[i] = tags.get(randomIndex);
+        }
         return  tagOptions;
     }
 }
