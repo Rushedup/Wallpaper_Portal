@@ -39,6 +39,7 @@ public class Flickr extends Fragment {
     private TextView failedView;
     private ImageView imageView;
     private Button setWallpaperButton;
+    private TextView imageTitle;
     private static final String ARG_SECTION_NUMBER = "section_number";
     private final String api_key = "84847469a610a5f8c906b1ef3e4321b5";
     private String keyword;
@@ -72,6 +73,8 @@ public class Flickr extends Fragment {
         progressBar = root.findViewById(R.id.progressBar);
         FloatingActionButton searchButton = root.findViewById(R.id.search_button);
         TextInputEditText searchBar = root.findViewById(R.id.search_bar);
+        imageTitle = root.findViewById(R.id.imageInfo);
+        imageTitle.setVisibility(View.GONE);
         imageView.setVisibility(View.GONE);
         failedView.setVisibility(View.GONE);
         setWallpaperButton.setVisibility(View.GONE);
@@ -80,6 +83,7 @@ public class Flickr extends Fragment {
             searchBar.onEditorAction(EditorInfo.IME_ACTION_DONE);
             shuffleButton.setVisibility(View.GONE);
             progressBar.setVisibility(View.VISIBLE);
+            imageTitle.setVisibility(View.GONE);
             String key = Objects.requireNonNull(searchBar.getText()).toString();
             keyword = key;
             callFlickr(key);
@@ -87,6 +91,7 @@ public class Flickr extends Fragment {
         });
         searchBar.setOnEditorActionListener((v, actionId, event) -> {
             if(actionId == EditorInfo.IME_ACTION_DONE) {
+                imageTitle.setVisibility(View.GONE);
                 searchBar.onEditorAction(EditorInfo.IME_ACTION_GO);
                 shuffleButton.setVisibility(View.GONE);
                 progressBar.setVisibility(View.VISIBLE);
@@ -101,6 +106,7 @@ public class Flickr extends Fragment {
         shuffleButton.setOnClickListener(v -> {
             progressBar.setVisibility(View.VISIBLE);
             shuffleButton.setVisibility(View.GONE);
+            imageTitle.setVisibility(View.GONE);
             callFlickr(keyword);
         });
         return root;
@@ -212,6 +218,7 @@ public class Flickr extends Fragment {
                         String[] pictureInfo = returnRandomID(publicPhotoIDs);
                         System.out.println(pictureInfo[0]);
                         getPhotoUrl(pictureInfo[0]);
+                        imageTitle.setText(pictureInfo[1]);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -266,6 +273,7 @@ public class Flickr extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     buttonHandler(setWallpaperButton);
                     shuffleButton.setVisibility(View.VISIBLE);
+                    imageTitle.setVisibility(View.VISIBLE);
                 }
             }
 

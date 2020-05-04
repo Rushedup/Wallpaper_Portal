@@ -37,6 +37,7 @@ public class NASA extends Fragment {
     private TextView superTextView;
     private Button superButton;
     private ProgressBar progressBar;
+    private TextView videoView;
     public static NASA newInstance(int index) {
         NASA fragment = new NASA();
         Bundle bundle = new Bundle();
@@ -62,9 +63,10 @@ public class NASA extends Fragment {
         ImageView imageView = root.findViewById(R.id.apod_image_view);
         Button setWallpaper = root.findViewById(R.id.setWallpaper);
         superButton = setWallpaper;
-        ProgressBar loading_image = root.findViewById(R.id.loading_image);
-        progressBar = loading_image;
-        loading_image.setVisibility(View.VISIBLE);
+        progressBar = root.findViewById(R.id.loading_image);
+        progressBar.setVisibility(View.VISIBLE);
+        videoView = root.findViewById(R.id.videoToday);
+        videoView.setVisibility(View.GONE);
         textView.setMovementMethod(new ScrollingMovementMethod());
         textView.setVisibility(View.GONE);
         imageView.setVisibility(View.GONE);
@@ -89,9 +91,8 @@ public class NASA extends Fragment {
                             loadFromPicasso(imageUrl, imageView);
                             textView.setText(explanation);
                         } else {
-                            textView.setMovementMethod(LinkMovementMethod.getInstance());
-                            textView.setText(R.string.apod_link);
-                            textView.setVisibility(View.VISIBLE);
+                            videoView.setVisibility(View.VISIBLE);
+                            progressBar.setVisibility(View.GONE);
                         }
                     }catch (JSONException e){
                         e.printStackTrace();
