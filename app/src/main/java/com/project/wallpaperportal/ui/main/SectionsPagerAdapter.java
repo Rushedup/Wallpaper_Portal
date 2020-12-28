@@ -10,10 +10,11 @@ import androidx.fragment.app.FragmentManager;
 import com.project.wallpaperportal.R;
 import com.project.wallpaperportal.logic.Flickr;
 import com.project.wallpaperportal.logic.NASA;
+import com.project.wallpaperportal.logic.Spotify;
 
 public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.flickr, R.string.nasa};
+    private static final int[] TAB_TITLES = new int[]{R.string.flickr, R.string.spotify, R.string.nasa};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -26,6 +27,8 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         if (position == 0) {
             return  Flickr.newInstance(position);
+        } else if (position == 1) {
+            return Spotify.newInstance(position);
         } else {
             return  NASA.newInstance(position);
         }
@@ -40,6 +43,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return 2;
+        return 3;
     }
 }

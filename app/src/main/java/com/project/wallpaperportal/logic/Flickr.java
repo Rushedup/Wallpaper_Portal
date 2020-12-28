@@ -273,7 +273,7 @@ public class Flickr extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     buttonHandler(setWallpaperButton);
                     shuffleButton.setVisibility(View.VISIBLE);
-                    imageTitle.setVisibility(View.VISIBLE);
+//                    imageTitle.setVisibility(View.VISIBLE);
                 }
             }
 
